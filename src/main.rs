@@ -1,6 +1,7 @@
 mod application;
 mod vector2;
 mod bezier_curve;
+mod control_point;
 
 use application::Application;
 

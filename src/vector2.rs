@@ -1,9 +1,9 @@
-use std::ops::{Add, Sub, Mul};
+use std::ops::{Add, Mul, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Vector2<T> {
-    x: T,
-    y: T
+    pub x: T,
+    pub y: T
 }
 
 impl<T: Copy> Vector2<T> {
@@ -12,6 +12,12 @@ impl<T: Copy> Vector2<T> {
             x,
             y
         }
+    }
+}
+
+impl<T> Vector2<T> where T: Add<Output = T> + Mul<Output = T> + Copy {
+    pub fn magnitude_squared(&self) -> T {
+        self.x * self.x + self.y * self.y
     }
 }
 
@@ -64,6 +70,15 @@ impl Into<eframe::egui::Pos2> for Vector2<f32> {
         eframe::egui::Pos2 {
             x: self.x,
             y: self.y
+        }
+    }
+}
+
+impl From<eframe::egui::Pos2> for Vector2<f32> {
+    fn from(value: eframe::egui::Pos2) -> Self {
+        Self {
+            x: value.x,
+            y: value.y
         }
     }
 }
