@@ -1,6 +1,7 @@
 use eframe::egui::{self};
 
 use crate::vector2::Vector2;
+use crate::matrix::Matrix;
 use crate::bezier_curve::BezierCurve;
 use crate::control_point::ControlPoint;
 

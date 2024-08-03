@@ -2,6 +2,7 @@ mod application;
 mod vector2;
 mod bezier_curve;
 mod control_point;
+mod matrix;
 
 use application::Application;
 
