@@ -31,11 +31,11 @@ impl ControlPoint {
     }
 
     pub fn update(&mut self, ui: &mut eframe::egui::Ui) {
+        let last_position = self.position;
+
         if self.is_dragged {
             if let Some(position) = ui.ctx().pointer_latest_pos() {
-                let position = Vector2::from(position);
-                self.delta_position = position - self.position;
-                self.position = position;
+                self.position = Vector2::from(position);
             }
 
             if !ui.ui_contains_pointer() {
@@ -43,6 +43,8 @@ impl ControlPoint {
                 self.position = self.position_before_drag;
             }
         }
+
+        self.delta_position = self.position - last_position;
 
         if ui.ui_contains_pointer() {
             if ui.input(|i| i.pointer.primary_pressed()) && self.is_pointer_in_bounds(ui) {

@@ -1,10 +1,10 @@
 use std::ops::{AddAssign, Mul};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Matrix<T: Clone> {
-    data: Vec<T>,
-    rows: usize,
-    columns: usize
+    pub data: Vec<T>,
+    pub rows: usize,
+    pub columns: usize
 }
 
 impl<T> Matrix<T> where T: Default + Clone {
@@ -22,6 +22,14 @@ impl<T> Matrix<T> where T: Default + Clone {
             rows: table.len(),
             columns: table[0].len()
         }
+    }
+
+    pub fn row_at(&self, i: usize) -> &[T] {
+        &self.data[(i * self.columns)..((i + 1) * self.columns)]
+    }
+
+    pub fn row_at_mut(&mut self, i: usize) -> &mut [T] {
+        &mut self.data[(i * self.columns)..((i + 1) * self.columns)]
     }
 }
 
