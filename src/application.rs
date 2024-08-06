@@ -1,12 +1,12 @@
 use eframe::egui::{self};
 
-use crate::cache_coefficient_matrix_computer::CacheCoefficientMatrixComputer;
-use crate::jit_coefficient_matrix_computer::JITCoefficientMatrixComputer;
 use crate::vector2::Vector2;
 use crate::matrix::Matrix;
 use crate::control_point::ControlPoint;
 use crate::bezier_curve::BezierCurve;
-use crate::coefficient_matrix_computer::CoefficientMatrixComputer;
+use crate::coefficient_matrix_computer::{CoefficientMatrixComputer, CoefficientMatrixComputerType};
+use crate::jit_coefficient_matrix_computer::JITCoefficientMatrixComputer;
+use crate::cache_coefficient_matrix_computer::CacheCoefficientMatrixComputer;
 use crate::options::Options;
 
 pub struct Application {
@@ -36,12 +36,20 @@ impl Application {
     }
 
     fn update_coefficient_matrix(&mut self) {
-        self.coefficient_matrix_computers[0].as_any_mut().downcast_mut::<CacheCoefficientMatrixComputer>().unwrap().precompute_cache_for(self.control_points.len() - 1);
-        self.curve.set_coefficient_matrix(self.coefficient_matrix_computers[0].compute_for(self.control_points.len() - 1));
+        let computer_index = match self.options.coefficient_matrix_computer_type {
+            CoefficientMatrixComputerType::Cached => {
+                self.coefficient_matrix_computers[0].as_any_mut().downcast_mut::<CacheCoefficientMatrixComputer>().unwrap().precompute_cache_for(self.control_points.len() - 1);
+                0
+            },
+            CoefficientMatrixComputerType::JIT => 1
+        };
+
+        self.curve.set_coefficient_matrix(self.coefficient_matrix_computers[computer_index].compute_for(self.control_points.len() - 1));
     }
 
     fn update_curve(&mut self) {
-        let control_points_matrix = Matrix { data: self.control_points.iter().map(|p| p.get_position().x).chain(self.control_points.iter().map(|p| p.get_position().y)).collect(), rows: 2, columns: self.control_points.len() };
+        let data = self.control_points.iter().map(|p| p.get_position().x).chain(self.control_points.iter().map(|p| p.get_position().y)).collect();
+        let control_points_matrix = Matrix { data, rows: 2, columns: self.control_points.len() };
         self.curve.compute_for(&control_points_matrix, self.options.steps);
     }
 }
@@ -67,9 +75,7 @@ impl eframe::App for Application {
             });
 
             ui.checkbox(&mut self.options.render_curve_points, "Render curve points");
-
             ui.checkbox(&mut self.options.render_control_points, "Render control points");
-
             ui.checkbox(&mut self.options.render_lines, "Render lines");
 
             if ui.button("Add control point").clicked() {
@@ -88,6 +94,13 @@ impl eframe::App for Application {
                 self.update_coefficient_matrix();
                 self.update_curve();
             }
+
+            egui::ComboBox::from_label("Coefficient computer")
+                .selected_text(format!("{}", self.options.coefficient_matrix_computer_type))
+                .show_ui(ui, |ui| {
+                    ui.selectable_value(&mut self.options.coefficient_matrix_computer_type, CoefficientMatrixComputerType::Cached, format!("{}", CoefficientMatrixComputerType::Cached));
+                    ui.selectable_value(&mut self.options.coefficient_matrix_computer_type, CoefficientMatrixComputerType::JIT, format!("{}", CoefficientMatrixComputerType::JIT));
+            });
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {

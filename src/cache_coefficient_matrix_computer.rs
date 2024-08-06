@@ -47,7 +47,6 @@ impl CacheCoefficientMatrixComputer {
 
 impl CoefficientMatrixComputer for CacheCoefficientMatrixComputer {
     fn compute_for(&self, n: usize) -> Matrix<f32> {
-
         let mut result = Matrix::new(n + 1, n + 1);
 
         for k in 0..=n {
