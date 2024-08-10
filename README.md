@@ -21,14 +21,22 @@ Bézier curve properties that we need for definition:
 + The start and end of the curve is tangent to lines between first two and last two segments
 + Curve can be split at any point into two subcurves which is also a Bézier curve
 
-Simple case of bezier curve is just a point: $B_0\left( t \right) = P_0$ \
+Simple case of bezier curve is just a point:
+
+$$
+B_0\left( t \right) = P_0
+$$
+
 A bit more complicated case is a two-point curve, which is just linear interpolation of these control points:
-$B_1\left( t \right) = \left( 1 - t \right)P_0 + t P_1$ \
+
+$$
+B_1\left( t \right) = \left( 1 - t \right)P_0 + t P_1
+$$
 
 Let's assume that we have n + 1 points so using third property $B_n\left( t \right)$ can be defined recursevily:
 
 $$
-B_0\left( t \right) = P_0
+B_0\left( t \right) = P_0 \\
 B_n\left( t \right) = \left( 1 - t \right) B_{n-1}\left( t \right) + t B_{n-1}\left( t \right)
 $$
 
@@ -41,10 +49,23 @@ $$
 In general case to compute point on a curve with given parameter $t$ we use matrix form:
 
 $$
-\left[ {\begin{array}{ccc}
-P_{0x} & P_{1x} & \dots \\
-P_{0y} & P_{1_y} \dots \\
-\end{array} } \right]
+B_n\left( t \right) =
+\left( {\begin{array}{cccc}
+P_{0x} & P_{1x} & \dots & P_{nx} \\
+P_{0y} & P_{1_y} & \dots & P_{ny} \\
+\end{array} } \right)
+\left( {\begin{array}{cccc}
+b_{0,n,n} & \cdots & \dots & b_{0,n,0} \\
+\dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots \\
+b_{n,n,n} & \dots & \dots & b_{n,n,0} \\
+\end{array} } \right)
+\left( {\begin{array}{c}
+t^n \\
+t^{n-1} \\
+\dots \\
+1 \\
+\end{array} } \right)
 $$
 
 # Build/Run

@@ -58,7 +58,7 @@ impl CoefficientMatrixComputer for CacheCoefficientMatrixComputer {
             });
         }
 
-        result
+        dbg!(result)
     }
 
     fn as_any(&self) -> &dyn std::any::Any {
