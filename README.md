@@ -36,7 +36,10 @@ $$
 Let's assume that we have n + 1 points so using third property $B_n\left( t \right)$ can be defined recursevily:
 
 $$
-B_0\left( t \right) = P_0 \\
+B_0\left( t \right) = P_0
+$$
+
+$$
 B_n\left( t \right) = \left( 1 - t \right) B_{n-1}\left( t \right) + t B_{n-1}\left( t \right)
 $$
 
